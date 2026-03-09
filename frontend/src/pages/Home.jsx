@@ -8,7 +8,7 @@ import CustomerLogos from "../components/landing/CustomerLogos";
 
 const Home = () => {
   return (
-    <div className="bg-zinc-900">
+    <div className="min-h-screen" style={{ background: "var(--bg)", color: "var(--text-main)", transition: "background-color .2s ease" }}>
       <LandingNav />
       <Hero />
       <Features />

@@ -27,7 +27,7 @@ const TopBar = ({
         : "Connecting...";
 
   return (
-    <div className="absolute right-0 z-10 w-full rounded-lg bg-zinc-800 px-4 py-4 text-white">
+    <div className="absolute right-0 z-10 w-full rounded-lg px-4 py-4" style={{ background: "var(--panel)", color: "var(--text-main)", border: "1px solid var(--border)" }}>
       <div className="flex items-center justify-between">
         <button
           type="button"

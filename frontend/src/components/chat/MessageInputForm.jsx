@@ -16,7 +16,7 @@ const MessageInputForm = ({
           <textarea
             id="message-input"
             rows={1}
-            className="w-full resize-none rounded-xl border border-gray-600 bg-transparent px-4 py-3 pr-12 text-white placeholder-gray-400"
+            className="w-full resize-none rounded-xl border px-4 py-3 pr-12 placeholder-[var(--text-muted)]" style={{ borderColor: "var(--border)", background: "var(--panel)", color: "var(--text-main)" }}
             placeholder={isSocketConnected ? "Type a message" : "Connecting..."}
             value={newMessage}
             onChange={(ev) => {

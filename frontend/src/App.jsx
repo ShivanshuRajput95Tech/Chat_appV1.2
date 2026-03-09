@@ -11,6 +11,7 @@ import Home from "./pages/Home";
 import { Toaster } from "react-hot-toast";
 import VerifyEmail from "./pages/VerifyEmail";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import axios from "axios";
 import ChatHome from "./pages/ChatHome";
 import { ProfileProvider } from "./context/ProfileContext";
@@ -22,7 +23,7 @@ const Layout = () => {
     const { isAuthenticated, checkAuth } = useAuth();
     useEffect(() => {
         checkAuth();
-    }, [isAuthenticated]);
+    }, [isAuthenticated, checkAuth]);
     return (
         <>
             <ScrollRestoration />
@@ -65,16 +66,20 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-    axios.defaults.baseURL = baseUrl;
-    axios.defaults.withCredentials = true;
+    useEffect(() => {
+        axios.defaults.baseURL = baseUrl;
+        axios.defaults.withCredentials = true;
+    }, []);
     return (
         <>
+            <ThemeProvider>
             <AuthProvider>
                 <ProfileProvider>
                     <RouterProvider router={router} />
                     <Toaster />
                 </ProfileProvider>
             </AuthProvider>
+            </ThemeProvider>
         </>
     );
 }

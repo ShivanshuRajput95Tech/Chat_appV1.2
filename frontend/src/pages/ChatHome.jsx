@@ -240,7 +240,7 @@ const ChatHome = () => {
   );
 
   return (
-    <div className="flex min-h-screen bg-zinc-900">
+    <div className="flex min-h-screen" style={{ background: "var(--bg)", color: "var(--text-main)", transition: "background-color .2s ease" }}>
       <Nav />
       <OnlineUsersList
         onlinePeople={onlinePeople}
