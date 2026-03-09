@@ -1,14 +1,9 @@
 const express = require("express");
+const avatarController = require("../controllers/avatarController");
 
 const router = express.Router();
 
-const {
-    createAvatar,
-    getAvatars
-} = require("../controllers/avatarController");
-
-router.post("/", createAvatar);
-
-router.get("/", getAvatars);
+router.post("/", avatarController.avatarController);
+router.get("/all", avatarController.getAllAvatars);
 
 module.exports = router;

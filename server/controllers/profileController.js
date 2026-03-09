@@ -1,25 +1,49 @@
-const User = require("../models/User");
+const jwt = require("jsonwebtoken");
+const { User } = require("../models/userModel");
 
-exports.getProfile = async(req, res) => {
+const profileController = async (req, res) => {
+  const token = req.cookies?.authToken;
+  if (!token) {
+    return res.status(401).json("no token");
+  }
 
-    const user = await User.findById(req.user._id);
+  return jwt.verify(token, process.env.JWTPRIVATEKEY, {}, async (err, userData) => {
+    if (err) {
+      return res.status(401).json("invalid token");
+    }
 
-    res.json(user);
-
+    const user = await User.findOne({ _id: userData._id });
+    return res.json(user);
+  });
 };
 
-exports.updateProfile = async(req, res) => {
+const profileUpdate = async (req, res) => {
+  const token = req.cookies?.authToken;
+  if (!token) {
+    return res.status(401).json("no token");
+  }
 
-    const { firstName, lastName, avatarLink } = req.body;
+  let decoded;
+  try {
+    decoded = jwt.verify(token, process.env.JWTPRIVATEKEY);
+  } catch (err) {
+    return res.status(401).json("invalid token");
+  }
 
-    const user = await User.findById(req.user._id);
+  const { firstName, lastName, email, avatarLink } = req.body;
+  const user = await User.findOne({ _id: decoded._id, email });
 
-    user.firstName = firstName;
-    user.lastName = lastName;
-    user.avatarLink = avatarLink;
+  if (!user) {
+    return res.status(404).json("user not found");
+  }
 
-    await user.save();
+  user.firstName = firstName;
+  user.lastName = lastName;
+  user.email = email;
+  user.avatarLink = avatarLink;
+  await user.save();
 
-    res.json(user);
-
+  return res.json(user);
 };
+
+module.exports = { profileController, profileUpdate };

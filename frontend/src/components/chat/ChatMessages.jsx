@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 
 const ChatMessages = ({ messages, userDetails, selectedUserId }) => {
   const messagesContainerRef = useRef(null);
@@ -11,45 +11,45 @@ const ChatMessages = ({ messages, userDetails, selectedUserId }) => {
         behavior: "smooth",
       });
     }
-  }, [messages, messagesContainerRef]);
+  }, [messages]);
+
+  const normalizedMessages = useMemo(() => {
+    return (messages || []).map((message) => ({
+      ...message,
+      createdAt: message.createdAt ? new Date(message.createdAt) : new Date(),
+    }));
+  }, [messages]);
+
+  const isOwnMessage = (message) => {
+    const senderId = typeof message.sender === "object" ? message.sender?._id : message.sender;
+    return senderId === userDetails?._id;
+  };
 
   return (
-    <div
-      className="absolute bottom-24 w-full px-7 lg:px-20 left-0"
-      ref={messagesContainerRef}
-    >
-      {selectedUserId && (
-        <div className="flex flex-col gap-2">
-          {messages.map((message) => (
-            <div
-              key={message._id}
-              className={`text-white ${
-                message.sender !== userDetails._id
-                  ? "bg-blue-600 self-start rounded-r-2xl"
-                  : "bg-blue-700 self-end rounded-l-2xl"
-              } relative group rounded-b-2xl px-5 py-3`}
-            >
+    <div className="absolute bottom-24 left-0 w-full overflow-y-auto px-4 lg:px-10" ref={messagesContainerRef}>
+      {!!selectedUserId && (
+        <div className="flex flex-col gap-2 pb-6 pt-20">
+          {normalizedMessages.map((message) => {
+            const own = isOwnMessage(message);
+            return (
               <div
-                style={{ wordWrap: "break-word" }}
-                className="flex flex-wrap max-w-[500px] overflow-hidden"
+                key={message._id}
+                className={`max-w-[85%] rounded-2xl px-4 py-2 text-sm text-white shadow ${
+                  own ? "self-end rounded-br-md bg-blue-700" : "self-start rounded-bl-md bg-blue-600"
+                }`}
               >
-                {message.text}
+                <p className="whitespace-pre-wrap break-words">{message.text}</p>
+                <p className="mt-1 text-[10px] text-blue-200">
+                  {message.createdAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                </p>
               </div>
-              <div
-                className={`absolute top-0 w-0 h-0 ${
-                  message.sender !== userDetails._id
-                    ? "border-r-blue-600 -left-4 border-r-[20px]"
-                    : "-right-4 border-l-blue-700 border-l-[20px]"
-                } border-b-[20px] border-b-transparent`}
-              ></div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
+
       {selectedUserId && !messages.length && (
-        <div className="text-gray-500 flex items-end justify-center">
-          Start a conversation
-        </div>
+        <div className="flex items-end justify-center pt-28 text-gray-400">Start a conversation</div>
       )}
     </div>
   );
