@@ -6,7 +6,7 @@ const LandingNav = () => {
   const { isAuthenticated } = useAuth();
 
   return (
-    <nav className="bg-gray-900">
+    <nav className="">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <a className="flex items-center space-x-3 rtl:space-x-reverse">
           <img src="https://flowbite.com/docs/images/logo.svg" className="h-8" alt="Swift Logo" />
