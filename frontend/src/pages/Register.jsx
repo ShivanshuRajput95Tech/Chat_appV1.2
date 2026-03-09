@@ -4,153 +4,78 @@ import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
 
 const Register = () => {
-    const [data, setData] = useState({
-        email: "",
-        firstName: "",
-        lastName: "",
-        password: "",
-    });
+  const [data, setData] = useState({
+    email: "",
+    firstName: "",
+    lastName: "",
+    password: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-    const handleChange = (e) => {
-        setData({ ...data, [e.target.name]: e.target.value });
-    };
+  const handleChange = (e) => {
+    setData({ ...data, [e.target.name]: e.target.value });
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const url = "/api/user/register";
-            const { data: res } = await axios.post(url, data);
-            console.log(res.message);
-            toast.success(res.message);
-        } catch (error) {
-            if (
-                error.response &&
-                error.response.status >= 300 &&
-                error.response.status <= 500
-            ) {
-                toast.error(error.response.data.message);
-            }
-        }
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      const url = "/api/user/register";
+      const { data: res } = await axios.post(url, data);
+      toast.success(res.message || "Registered successfully");
+      setData({ email: "", firstName: "", lastName: "", password: "" });
+    } catch (error) {
+      if (error.response && error.response.status >= 300 && error.response.status <= 500) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Unable to register right now");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-    return (
-        <section className="bg-gray-900 min-h-screen">
-            <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-                <div className="w-full bg-gray-800 rounded-lg shadow border md:mt-0 sm:max-w-md xl:p-0 border-gray-700">
-                    <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-                        <h1 className="text-xl font-bold leading-tight tracking-tight text-white">
-                            Create an account
-                        </h1>
-                        <form
-                            className="space-y-4 md:space-y-6"
-                            action="#"
-                            onSubmit={handleSubmit}
-                        >
-                            <div>
-                                <label className="block mb-2 text-sm font-medium text-white">
-                                    Your email
-                                </label>
-                                <input
-                                    onChange={handleChange}
-                                    value={data.email}
-                                    type="email"
-                                    name="email"
-                                    id="email"
-                                    className="bg-gray-700 border border-gray-600 text-white sm:text-sm rounded-lg block w-full p-2.5 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
-                                    placeholder="name@company.com"
-                                    required=""
-                                />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block mb-2 text-sm font-medium text-white">
-                                        First Name
-                                    </label>
-                                    <input
-                                        onChange={handleChange}
-                                        value={data.firstName}
-                                        type="text"
-                                        name="firstName"
-                                        id="firstName"
-                                        placeholder="John"
-                                        className="bg-gray-700 border border-gray-600 text-white sm:text-sm rounded-lg block w-full p-2.5 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
-                                        required=""
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block mb-2 text-sm font-medium text-white">
-                                        Last Name
-                                    </label>
-                                    <input
-                                        onChange={handleChange}
-                                        value={data.lastName}
-                                        type="text"
-                                        name="lastName"
-                                        id="lastName"
-                                        placeholder="Doe"
-                                        className="bg-gray-700 border border-gray-600 text-white sm:text-sm rounded-lg block w-full p-2.5 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
-                                        required=""
-                                    />
-                                </div>
-                            </div>
-                            <div>
-                                <label className="block mb-2 text-sm font-medium text-white">
-                                    Password
-                                </label>
-                                <input
-                                    onChange={handleChange}
-                                    value={data.password}
-                                    type="password"
-                                    name="password"
-                                    id="password"
-                                    placeholder="••••••••"
-                                    className="bg-gray-700 border border-gray-600 text-white sm:text-sm rounded-lg block w-full p-2.5 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
-                                    required=""
-                                />
-                            </div>
-                            <div className="flex items-start">
-                                <div className="flex items-center h-5">
-                                    <input
-                                        id="terms"
-                                        aria-describedby="terms"
-                                        type="checkbox"
-                                        className="w-4 h-4 border border-gray-600 rounded bg-gray-700 focus:ring-3 focus:ring-blue-600"
-                                        required
-                                    />
-                                </div>
-                                <div className="ml-3 text-sm">
-                                    <label className="font-light text-gray-300">
-                                        I accept the{" "}
-                                        <a
-                                            className="font-medium text-indigo-400 hover:underline"
-                                            href="#"
-                                        >
-                                            Terms and Conditions
-                                        </a>
-                                    </label>
-                                </div>
-                            </div>
-                            <button
-                                type="submit"
-                                className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-                            >
-                                Create an account
-                            </button>
-                            <p className="text-sm font-light text-gray-400">
-                                Already have an account?{" "}
-                                <Link
-                                    to={"/login"}
-                                    className="font-medium text-indigo-400 hover:underline"
-                                >
-                                    Login here
-                                </Link>
-                            </p>
-                        </form>
-                    </div>
-                </div>
+  return (
+    <section className="min-h-screen px-4 py-8" style={{ background: "var(--bg)", color: "var(--text-main)" }}>
+      <div className="mx-auto flex min-h-[80vh] max-w-md items-center justify-center">
+        <div className="w-full rounded-xl p-6 shadow" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
+          <h1 className="mb-5 text-xl font-bold">Create an account</h1>
+          <form className="space-y-4" onSubmit={handleSubmit}>
+            <div>
+              <label className="mb-2 block text-sm">Your email</label>
+              <input onChange={handleChange} value={data.email} type="email" name="email" className="w-full rounded-lg border p-2.5" style={{ background: "var(--panel-soft)", borderColor: "var(--border)", color: "var(--text-main)" }} placeholder="name@company.com" required />
             </div>
-        </section>
-    );
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label className="mb-2 block text-sm">First Name</label>
+                <input onChange={handleChange} value={data.firstName} type="text" name="firstName" placeholder="John" className="w-full rounded-lg border p-2.5" style={{ background: "var(--panel-soft)", borderColor: "var(--border)", color: "var(--text-main)" }} required />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm">Last Name</label>
+                <input onChange={handleChange} value={data.lastName} type="text" name="lastName" placeholder="Doe" className="w-full rounded-lg border p-2.5" style={{ background: "var(--panel-soft)", borderColor: "var(--border)", color: "var(--text-main)" }} required />
+              </div>
+            </div>
+            <div>
+              <label className="mb-2 block text-sm">Password</label>
+              <div className="flex gap-2">
+                <input onChange={handleChange} value={data.password} type={showPassword ? "text" : "password"} name="password" placeholder="••••••••" className="w-full rounded-lg border p-2.5" style={{ background: "var(--panel-soft)", borderColor: "var(--border)", color: "var(--text-main)" }} required />
+                <button type="button" className="rounded-lg border px-3" style={{ borderColor: "var(--border)" }} onClick={() => setShowPassword((v) => !v)}>
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
+            </div>
+            <button type="submit" disabled={isSubmitting} className="w-full rounded-lg bg-blue-600 px-5 py-2.5 text-white hover:bg-blue-700 disabled:opacity-60">
+              {isSubmitting ? "Creating account..." : "Create an account"}
+            </button>
+            <p className="text-sm" style={{ color: "var(--text-muted)" }}>
+              Already have an account? <Link to="/login" className="font-medium text-blue-500 hover:underline">Login here</Link>
+            </p>
+          </form>
+        </div>
+      </div>
+    </section>
+  );
 };
 
 export default Register;

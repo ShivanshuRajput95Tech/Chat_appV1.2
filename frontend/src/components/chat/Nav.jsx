@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import ThemeToggle from "../ui/ThemeToggle";
 
 const Nav = () => {
   const { logout, user } = useAuth();
@@ -36,7 +37,7 @@ const Nav = () => {
         </svg>
       </button>
       {isMobile && (
-        <header className="fixed h-screen w-[150px] z-40 lg:static bg-zinc-800">
+        <header className="fixed h-screen w-[150px] z-40 lg:static" style={{ background: "var(--panel)" }}>
           <Link
             to="/"
             className="flex gap-2 items-center justify-center border-b border-gray-600 py-4"
@@ -46,11 +47,14 @@ const Nav = () => {
               className="h-8"
               alt="Swift Logo"
             />
-            <span className="font-semibold text-xl text-white">Swift</span>
+            <span className="font-semibold text-xl text-[var(--text-main)]">Swift</span>
           </Link>
           <nav className="h-full flex flex-col my-4 justify-between">
+            <div className="px-4 mb-4">
+              <ThemeToggle />
+            </div>
             <div className="flex flex-col gap-5">
-              <Link to="/profile" className="flex items-center gap-2 text-white hover:text-blue-400 px-4">
+              <Link to="/profile" className="flex items-center gap-2 text-[var(--text-main)] hover:text-blue-400 px-4">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -67,7 +71,7 @@ const Nav = () => {
                 </svg>
                 <span>Profile</span>
               </Link>
-              <Link to="/chathome" className="flex items-center gap-2 text-white hover:text-blue-400 px-4">
+              <Link to="/chathome" className="flex items-center gap-2 text-[var(--text-main)] hover:text-blue-400 px-4">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -85,7 +89,7 @@ const Nav = () => {
                 <span>Chats</span>
               </Link>
             </div>
-            <Link className="flex items-center gap-2 mb-14 text-white hover:text-red-400 px-4">
+            <Link className="flex items-center gap-2 mb-14 text-[var(--text-main)] hover:text-red-400 px-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"

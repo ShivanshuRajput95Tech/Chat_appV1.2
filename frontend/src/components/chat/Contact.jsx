@@ -14,7 +14,7 @@ const Contact = ({
       key={userId}
       className={`${
         selectedUserId === userId ? "bg-blue-600" : ""
-      } capitalize py-2 lg:py-3 px-2 lg:px-5 rounded-[1.3rem] cursor-pointer`}
+      } capitalize py-2 lg:py-3 px-2 lg:px-5 rounded-[1.3rem] cursor-pointer transition hover:scale-[1.01] hover:bg-blue-500/20`}
       onClick={() => {
         setSelectedUserId(userId);
       }}
