@@ -7,6 +7,8 @@ import OnlineUsersList from "../components/chat/OnlineUserList";
 import TopBar from "../components/chat/TopBar";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { createGroup } from "../api/groupApi";
 
 const socketUrl = "ws://localhost:4000";
 
@@ -234,6 +236,23 @@ const ChatHome = () => {
     if (!user) navigate("/");
   }, [user, navigate]);
 
+
+  const handleStartCall = useCallback(() => {
+    if (!selectedUserId) return;
+    toast.success("Calling feature UI started (RTC integration next step)");
+  }, [selectedUserId]);
+
+  const handleCreateGroup = useCallback(async () => {
+    try {
+      const name = window.prompt("Enter group name");
+      if (!name) return;
+      await createGroup({ name, members: [selectedUserId].filter(Boolean) });
+      toast.success("Group created successfully");
+    } catch (error) {
+      toast.error(error.message || "Unable to create group");
+    }
+  }, [selectedUserId]);
+
   const selectedUser = useMemo(
     () => onlinePeople[selectedUserId] || offlinePeople[selectedUserId],
     [offlinePeople, onlinePeople, selectedUserId]
@@ -258,6 +277,8 @@ const ChatHome = () => {
             isSocketConnected={isSocketConnected}
             selectedUser={selectedUser}
             isTyping={Boolean(typingUsers[selectedUserId])}
+            onStartCall={handleStartCall}
+            onCreateGroup={handleCreateGroup}
           />
         )}
         <ChatMessages messages={messages} userDetails={user} selectedUserId={selectedUserId} />

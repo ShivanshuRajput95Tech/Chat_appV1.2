@@ -8,6 +8,8 @@ const TopBar = ({
   isSocketConnected,
   selectedUser,
   isTyping,
+  onStartCall,
+  onCreateGroup,
 }) => {
   const fallbackName =
     onlinePeople[selectedUserId]?.username ||
@@ -27,27 +29,19 @@ const TopBar = ({
         : "Connecting...";
 
   return (
-    <div className="absolute right-0 z-10 w-full rounded-lg px-4 py-4" style={{ background: "var(--panel)", color: "var(--text-main)", border: "1px solid var(--border)" }}>
-      <div className="flex items-center justify-between">
+    <div
+      className="absolute right-0 z-10 w-full rounded-lg px-4 py-4"
+      style={{ background: "var(--panel)", color: "var(--text-main)", border: "1px solid var(--border)" }}
+    >
+      <div className="flex items-center justify-between gap-2">
         <button
           type="button"
           className="rounded-md p-1 hover:bg-zinc-700"
           onClick={() => setSelectedUserId(null)}
           aria-label="Back to users"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="h-6 w-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
-            />
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-6 w-6">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
           </svg>
         </button>
 
@@ -56,7 +50,25 @@ const TopBar = ({
             <p className="font-medium">{displayName}</p>
             <p className={`text-xs ${isTyping ? "text-blue-300" : "text-gray-300"}`}>{statusText}</p>
           </div>
-          <span className={`h-3 w-3 rounded-full ${isOnline ? "bg-green-500" : "bg-gray-500"}`} />
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={onStartCall}
+              className="rounded-md border px-2 py-1 text-xs"
+              style={{ borderColor: "var(--border)" }}
+            >
+              Call
+            </button>
+            <button
+              type="button"
+              onClick={onCreateGroup}
+              className="rounded-md border px-2 py-1 text-xs"
+              style={{ borderColor: "var(--border)" }}
+            >
+              Group
+            </button>
+            <span className={`h-3 w-3 rounded-full ${isOnline ? "bg-green-500" : "bg-gray-500"}`} />
+          </div>
         </div>
       </div>
     </div>
