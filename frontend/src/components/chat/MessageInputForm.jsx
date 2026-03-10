@@ -5,23 +5,39 @@ const MessageInputForm = ({
   newMessage,
   setNewMessage,
   sendMessage,
+  isSocketConnected,
+  onTyping,
+  onBlur,
 }) => {
   return (
     <>
       {selectedUserId && (
         <form onSubmit={sendMessage} className="relative m-4 w-full">
-          <input
-            type="text"
+          <textarea
             id="message-input"
-            className="w-full px-4 py-3 rounded-xl bg-transparent border border-gray-600 text-white placeholder-gray-400"
-            placeholder="Your Message"
+            rows={1}
+            className="w-full resize-none rounded-xl border px-4 py-3 pr-12 placeholder-[var(--text-muted)]" style={{ borderColor: "var(--border)", background: "var(--panel)", color: "var(--text-main)" }}
+            placeholder={isSocketConnected ? "Type a message" : "Connecting..."}
             value={newMessage}
-            onChange={(ev) => setNewMessage(ev.target.value)}
+            onChange={(ev) => {
+              setNewMessage(ev.target.value);
+              onTyping?.();
+            }}
+            onBlur={onBlur}
+            onKeyDown={(ev) => {
+              if (ev.key === "Enter" && !ev.shiftKey) {
+                ev.preventDefault();
+                sendMessage();
+              }
+            }}
             required
+            disabled={!isSocketConnected}
           />
           <button
             type="submit"
-            className="absolute end-0 top-0 aspect-square h-full font-medium text-white hover:text-blue-400"
+            className="absolute end-2 top-1/2 -translate-y-1/2 text-white transition hover:text-blue-400 disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={!isSocketConnected}
+            aria-label="Send message"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -29,7 +45,7 @@ const MessageInputForm = ({
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="w-6 h-6"
+              className="h-6 w-6"
             >
               <path
                 strokeLinecap="round"
