@@ -1,37 +1,22 @@
-const Message = require("../models/Message");
-const User = require("../models/User");
+const protect = require("../middleware/protect");
+const Message = require("../models/messageModel");
 
-exports.getMessages = async(req, res) => {
-
+const messageController = async (req, res) => {
+  try {
     const { userId } = req.params;
-
-    const ourUserId = req.user._id;
-
-    // Mark messages from the other user as read
-    await Message.updateMany({
-        sender: userId,
-        recipient: ourUserId,
-        read: false
-    }, { read: true });
+    const userData = await protect(req);
+    const ourUserId = userData._id;
 
     const messages = await Message.find({
-        sender: { $in: [ourUserId, userId] },
-        recipient: { $in: [ourUserId, userId] }
+      sender: { $in: [userId, ourUserId] },
+      recipient: { $in: [userId, ourUserId] },
     }).sort({ createdAt: 1 });
 
-    res.json(messages);
-
+    return res.json(messages);
+  } catch (error) {
+    console.error("Error in messageController:", error);
+    return res.status(401).json({ message: "Unauthorized" });
+  }
 };
 
-exports.getUnreadCounts = async(req, res) => {
-
-    const ourUserId = req.user._id;
-
-    const unreadCounts = await Message.aggregate([
-        { $match: { recipient: ourUserId, read: false } },
-        { $group: { _id: "$sender", count: { $sum: 1 } } }
-    ]);
-
-    res.json(unreadCounts);
-
-};
+module.exports = messageController;

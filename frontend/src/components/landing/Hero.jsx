@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import hero from "../../assets/hero.png";
+import hero from "../../assets/react.svg";
 import { useAuth } from "../../context/AuthContext";
 
 const Hero = () => {

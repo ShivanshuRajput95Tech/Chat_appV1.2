@@ -1,32 +1,35 @@
-const Avatar = require("../models/Avatar");
+const Avatar = require("../models/avatars");
 
-exports.createAvatar = async(req, res) => {
+async function avatarController(req, res) {
+  const { link } = req.body;
 
-    try {
+  if (!link) {
+    return res.status(400).json({ error: "Link is required" });
+  }
 
-        const { link } = req.body;
+  try {
+    const newAvatar = new Avatar({ link });
+    await newAvatar.save();
 
-        const avatar = new Avatar({ link });
+    return res.status(201).json({
+      success: true,
+      message: "Avatar link added successfully",
+      avatar: newAvatar,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+}
 
-        await avatar.save();
-
-        res.json({
-            message: "Avatar added",
-            avatar
-        });
-
-    } catch (error) {
-
-        res.status(500).json({ message: "Server error" });
-
-    }
-
-};
-
-exports.getAvatars = async(req, res) => {
-
+async function getAllAvatars(req, res) {
+  try {
     const avatars = await Avatar.find();
+    return res.status(200).json({ success: true, avatars });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+}
 
-    res.json(avatars);
-
-};
+module.exports = { avatarController, getAllAvatars };

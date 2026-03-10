@@ -22,8 +22,8 @@ const OnlineUsersList = ({
   });
 
   return (
-    <section className="w-[29%] py-3 border-r border-gray-600 px-2 lg:px-4 bg-zinc-900">
-      <div className="text-white flex items-center gap-2 p-1 px-2">
+    <section className="w-[29%] py-3 border-r px-2 lg:px-4" style={{ borderColor: "var(--border)", background: "var(--panel-soft)" }}>
+      <div className="flex items-center gap-2 p-1 px-2" style={{ color: "var(--text-main)" }}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -43,10 +43,10 @@ const OnlineUsersList = ({
           placeholder="Search..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full bg-transparent outline-none text-white placeholder-gray-400"
+          className="w-full bg-transparent outline-none placeholder-[var(--text-muted)]" style={{ color: "var(--text-main)" }}
         />
       </div>
-      <div className="max-h-[85vh] overflow-auto no-scrollbar">
+      <div className="max-h-[85vh] overflow-auto no-scrollbar" style={{ color: "var(--text-main)" }}>
         {filteredOnlinePeople.map((userId) => {
           const { username, avatarLink } = onlinePeople[userId];
           return (
